@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  prisma:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./node_modules:/app/node_modules
+      - ./.env:/app/.env:ro
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    command: npx prisma migrate dev --name init-admin-user
+    depends_on:
+      - db
+    networks:
+      - default
