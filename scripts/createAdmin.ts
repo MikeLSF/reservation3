@@ -4,12 +4,26 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  const passwordHash = await bcrypt.hash('demo1234', 10);
+  const email = 'admin@demo.fr';
+  const password = 'demo1234';
+  const name = 'Mike Admin';
+
+  // Vérifier si l'utilisateur existe déjà
+  const existingAdmin = await prisma.adminUser.findUnique({
+    where: { email },
+  });
+
+  if (existingAdmin) {
+    console.log(`Un utilisateur avec l'email ${email} existe déjà :`, existingAdmin);
+    return;
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
 
   const admin = await prisma.adminUser.create({
     data: {
-      email: 'admin@demo.fr',
-      name: 'Mike Admin',
+      email,
+      name,
       passwordHash,
     },
   });
